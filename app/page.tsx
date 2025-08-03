@@ -1,12 +1,15 @@
 "use client";
 
 import { CalculationResult, Person } from "@/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { clearUrl, getDataFromUrl, setDataToUrl } from "@/utils/shareUtils";
 
 import { Button } from "@heroui/button";
 import CalculationResults from "@/components/CalculationResults";
 import PersonForm from "@/components/PersonForm";
 import PersonList from "@/components/PersonList";
+import ShareButton from "@/components/ShareButton";
+import SharedDataLoader from "@/components/SharedDataLoader";
 import { calculateExpenses } from "@/utils/expenseCalculator";
 import { motion } from "framer-motion";
 
@@ -14,6 +17,23 @@ const HomePage = () => {
   const [people, setPeople] = useState<Person[]>([]);
   const [calculationResult, setCalculationResult] =
     useState<CalculationResult | null>(null);
+  const [sharedData, setSharedData] = useState<{
+    people: Person[];
+    result: CalculationResult | null;
+  }>({ people: [], result: null });
+
+  // URL'den paylaşılan veriyi kontrol et
+  useEffect(() => {
+    const { people: urlPeople, result: urlResult } = getDataFromUrl();
+    if (urlPeople.length > 0 || urlResult) {
+      setSharedData({ people: urlPeople, result: urlResult });
+    }
+  }, []);
+
+  // Veri değiştiğinde URL'yi güncelle
+  useEffect(() => {
+    setDataToUrl(people, calculationResult);
+  }, [people, calculationResult]);
 
   const addPerson = (personData: Omit<Person, "id">) => {
     const newPerson: Person = {
@@ -42,6 +62,22 @@ const HomePage = () => {
   const clearAll = () => {
     setPeople([]);
     setCalculationResult(null);
+    clearUrl();
+  };
+
+  const loadSharedData = (
+    sharedPeople: Person[],
+    sharedResult: CalculationResult | null
+  ) => {
+    setPeople(sharedPeople);
+    setCalculationResult(sharedResult);
+    setSharedData({ people: [], result: null });
+    clearUrl();
+  };
+
+  const clearSharedData = () => {
+    setSharedData({ people: [], result: null });
+    clearUrl();
   };
 
   return (
@@ -73,6 +109,14 @@ const HomePage = () => {
           </motion.p>
         </motion.div>
 
+        {/* Paylaşılan Veri Yükleyici */}
+        <SharedDataLoader
+          people={sharedData.people}
+          result={sharedData.result}
+          onLoadData={loadSharedData}
+          onClearShared={clearSharedData}
+        />
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Sol Taraf - Form ve Liste */}
           <div className="space-y-6">
@@ -85,30 +129,35 @@ const HomePage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, type: "spring" }}
-                className="flex gap-4"
+                className="space-y-4"
               >
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex-1"
-                >
-                  <Button
-                    color="primary"
-                    size="lg"
-                    onClick={handleCalculate}
-                    className="w-full"
+                <div className="flex gap-4">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex-1"
                   >
-                    🧮 Hesapla
-                  </Button>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button color="danger" variant="light" onClick={clearAll}>
-                    🗑️ Temizle
-                  </Button>
-                </motion.div>
+                    <Button
+                      color="primary"
+                      size="lg"
+                      onClick={handleCalculate}
+                      className="w-full"
+                    >
+                      🧮 Hesapla
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button color="danger" variant="light" onClick={clearAll}>
+                      🗑️ Temizle
+                    </Button>
+                  </motion.div>
+                </div>
+
+                {/* Paylaşım Butonu */}
+                {calculationResult && <ShareButton disabled={false} />}
               </motion.div>
             )}
           </div>
@@ -125,7 +174,7 @@ const HomePage = () => {
             <h3 className="text-lg font-semibold text-blue-900 mb-4">
               📋 Nasıl Kullanılır?
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-blue-800">
               <div>
                 <h4 className="font-medium mb-2">1. Kişi Ekleme</h4>
                 <ul className="space-y-1">
@@ -145,6 +194,22 @@ const HomePage = () => {
                     gerektiğini hesaplayacak
                   </li>
                   <li>• Sonuçlar sağ tarafta görüntülenecek</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium mb-2">3. Paylaşım</h4>
+                <ul className="space-y-1">
+                  <li>
+                    • Hesaplama sonucunu "Sonucu Paylaş" butonu ile
+                    paylaşabilirsiniz
+                  </li>
+                  <li>
+                    • Paylaşılan link ile diğerleri de aynı sonucu görebilir
+                  </li>
+                  <li>
+                    • IBAN'ları kopyalayarak transfer işlemlerini kolayca
+                    yapabilirsiniz
+                  </li>
                 </ul>
               </div>
             </div>
