@@ -1,0 +1,86 @@
+{
+  "seo": {
+    "home": {
+      "title": "Harcama Hesaplayıcı",
+      "description": "Kişilerin harcamalarını girerek kimin kime ne kadar para vermesi gerektiğini hesaplayın"
+    }
+  },
+  "app": {
+    "title": "💰 Harcama Hesaplayıcı",
+    "subtitle": "Kişilerin harcamalarını girerek kimin kime ne kadar para vermesi gerektiğini hesaplayın",
+    "addPerson": "Kişi Ekle",
+    "calculate": "🧮 Hesapla",
+    "clear": "🗑️ Temizle",
+    "share": "📤 Sonucu Paylaş",
+    "delete": "Sil",
+    "copying": "Kopyalanıyor...",
+    "copied": "Kopyalandı!",
+    "personList": "Kişi Listesi",
+    "noPeople": "Henüz kişi eklenmemiş. Kişi eklemek için yukarıdaki formu kullanın.",
+    "totalExpense": "Toplam Harcama:",
+    "calculationResults": "Hesaplama Sonuçları",
+    "totalExpenseLabel": "Toplam Harcama",
+    "averagePerPerson": "Kişi Başı Ortalama",
+    "transferCount": "Transfer Sayısı",
+    "transfers": "Yapılması Gereken Transferler",
+    "transferAmount": "transfer edilecek",
+    "perfectMessage": "🎉 Mükemmel! Herkes eşit ödeme yapmış.",
+    "noTransferNeeded": "Herhangi bir transfer yapılmasına gerek yok.",
+    "sharedDataFound": "📤 Paylaşılan Veri Bulundu",
+    "peopleCount": "👥 {count} kişi",
+    "calculationAvailable": "🧮 Hesaplama sonucu mevcut",
+    "load": "📥 Yükle",
+    "reject": "❌ Reddet",
+    "form": {
+      "name": "Ad Soyad",
+      "namePlaceholder": "Kişinin adını ve soyadını girin",
+      "iban": "IBAN",
+      "ibanPlaceholder": "TR00 0000 0000 0000 0000 0000 00",
+      "expenses": "Harcama Miktarı",
+      "expensesPlaceholder": "0.00",
+      "addButton": "Kişi Ekle"
+    },
+    "currencySelector": {
+      "title": "Para Birimi Seç"
+    },
+    "validation": {
+      "fillAllFields": "Lütfen tüm alanları doldurun!",
+      "validAmount": "Lütfen geçerli bir harcama miktarı girin!",
+      "minTwoPeople": "Hesaplama yapmak için en az 2 kişi eklemeniz gerekiyor!",
+      "copySuccess": "IBAN kopyalandı!",
+      "copyError": "Kopyalama başarısız oldu!",
+      "shareError": "Paylaşım sırasında bir hata oluştu!",
+      "linkCopyError": "Link kopyalanamadı! Lütfen tekrar deneyin.",
+      "nameRequired": "Ad soyad alanı zorunludur",
+      "ibanRequired": "IBAN alanı zorunludur",
+      "expensesInvalid": "Geçerli bir harcama miktarı giriniz"
+    },
+    "instructions": {
+      "title": "📋 Nasıl Kullanılır?",
+      "step1": {
+        "title": "1. Kişi Ekleme",
+        "items": [
+          "Her kişinin adını ve soyadını girin",
+          "IBAN bilgisini ekleyin",
+          "O kişinin yaptığı harcama miktarını girin"
+        ]
+      },
+      "step2": {
+        "title": "2. Hesaplama",
+        "items": [
+          "En az 2 kişi ekledikten sonra \"Hesapla\" butonuna basın",
+          "Sistem otomatik olarak kimin kime ne kadar para vermesi gerektiğini hesaplayacak",
+          "Sonuçlar sağ tarafta görüntülenecek"
+        ]
+      },
+      "step3": {
+        "title": "3. Paylaşım",
+        "items": [
+          "Hesaplama sonucunu \"Sonucu Paylaş\" butonu ile paylaşabilirsiniz",
+          "Paylaşılan link ile diğerleri de aynı sonucu görebilir",
+          "IBAN'ları kopyalayarak transfer işlemlerini kolayca yapabilirsiniz"
+        ]
+      }
+    }
+  }
+}

@@ -4,6 +4,13 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
 };
 
+export interface Currency {
+  code: string;
+  symbol: string;
+  name: string;
+  locale: string;
+}
+
 export interface Person {
   id: string;
   name: string;

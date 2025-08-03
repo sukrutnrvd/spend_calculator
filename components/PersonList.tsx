@@ -1,37 +1,44 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { Currency, Person } from "@/types";
 
 import { Button } from "@heroui/button";
-import { Person } from "@/types";
 import React from "react";
-import { formatCurrency } from "@/utils/expenseCalculator";
-
-const copyToClipboard = async (text: string) => {
-  try {
-    await navigator.clipboard.writeText(text);
-    alert("IBAN kopyalandı!");
-  } catch (err) {
-    console.error("Kopyalama başarısız:", err);
-    alert("Kopyalama başarısız oldu!");
-  }
-};
+import { formatCurrency } from "@/utils/currencyUtils";
+import { formatCurrency as formatCurrencyOld } from "@/utils/expenseCalculator";
+import { useTranslations } from "next-intl";
 
 interface PersonListProps {
   people: Person[];
   onRemovePerson: (id: string) => void;
+  selectedCurrency: Currency;
 }
 
-const PersonList: React.FC<PersonListProps> = ({ people, onRemovePerson }) => {
+const PersonList: React.FC<PersonListProps> = ({
+  people,
+  onRemovePerson,
+  selectedCurrency,
+}) => {
+  const t = useTranslations("app");
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert(t("validation.copySuccess"));
+    } catch (err) {
+      console.error("Kopyalama başarısız:", err);
+      alert(t("validation.copyError"));
+    }
+  };
+
   if (people.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        Henüz kişi eklenmemiş. Kişi eklemek için yukarıdaki formu kullanın.
-      </div>
+      <div className="text-center py-8 text-gray-500">{t("noPeople")}</div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-800">Kişi Listesi</h3>
+      <h3 className="text-lg font-semibold text-gray-800">{t("personList")}</h3>
 
       <AnimatePresence>
         {people.map((person, index) => (
@@ -64,7 +71,7 @@ const PersonList: React.FC<PersonListProps> = ({ people, onRemovePerson }) => {
                   </Button>
                 </div>
                 <p className="text-lg font-semibold text-green-600 mt-2">
-                  {formatCurrency(person.expenses)}
+                  {formatCurrency(person.expenses, selectedCurrency)}
                 </p>
               </div>
 
@@ -74,7 +81,7 @@ const PersonList: React.FC<PersonListProps> = ({ people, onRemovePerson }) => {
                 variant="light"
                 onClick={() => onRemovePerson(person.id)}
               >
-                Sil
+                {t("delete")}
               </Button>
             </div>
           </motion.div>
@@ -83,10 +90,11 @@ const PersonList: React.FC<PersonListProps> = ({ people, onRemovePerson }) => {
 
       <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
         <div className="flex justify-between items-center">
-          <span className="font-medium text-blue-900">Toplam Harcama:</span>
+          <span className="font-medium text-blue-900">{t("totalExpense")}</span>
           <span className="text-xl font-bold text-blue-900">
             {formatCurrency(
-              people.reduce((sum, person) => sum + person.expenses, 0)
+              people.reduce((sum, person) => sum + person.expenses, 0),
+              selectedCurrency
             )}
           </span>
         </div>

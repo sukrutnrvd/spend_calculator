@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import { Button } from "@heroui/button";
 import { copyShareLink } from "@/utils/shareUtils";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface ShareButtonProps {
   disabled?: boolean;
 }
 
 const ShareButton: React.FC<ShareButtonProps> = ({ disabled = false }) => {
+  const t = useTranslations("app");
   const [isCopied, setIsCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,10 +26,10 @@ const ShareButton: React.FC<ShareButtonProps> = ({ disabled = false }) => {
         setIsCopied(true);
         setTimeout(() => setIsCopied(false), 2000);
       } else {
-        alert("Link kopyalanamadı! Lütfen tekrar deneyin.");
+        alert(t("validation.linkCopyError"));
       }
     } catch (error) {
-      alert("Paylaşım sırasında bir hata oluştu!");
+      alert(t("validation.shareError"));
     } finally {
       setIsLoading(false);
     }
@@ -51,11 +53,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ disabled = false }) => {
           )
         }
       >
-        {isLoading
-          ? "Kopyalanıyor..."
-          : isCopied
-            ? "Kopyalandı!"
-            : "Sonucu Paylaş"}
+        {isLoading ? t("copying") : isCopied ? t("copied") : t("share")}
       </Button>
     </motion.div>
   );

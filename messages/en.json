@@ -1,0 +1,86 @@
+{
+  "seo": {
+    "home": {
+      "title": "Expense Calculator",
+      "description": "Calculate who owes what to whom by entering people's expenses"
+    }
+  },
+  "app": {
+    "title": "💰 Expense Calculator",
+    "subtitle": "Calculate who owes what to whom by entering people's expenses",
+    "addPerson": "Add Person",
+    "calculate": "🧮 Calculate",
+    "clear": "🗑️ Clear",
+    "share": "📤 Share Result",
+    "delete": "Delete",
+    "copying": "Copying...",
+    "copied": "Copied!",
+    "personList": "Person List",
+    "noPeople": "No people added yet. Use the form above to add people.",
+    "totalExpense": "Total Expense:",
+    "calculationResults": "Calculation Results",
+    "totalExpenseLabel": "Total Expense",
+    "averagePerPerson": "Average Per Person",
+    "transferCount": "Transfer Count",
+    "transfers": "Required Transfers",
+    "transferAmount": "to be transferred",
+    "perfectMessage": "🎉 Perfect! Everyone paid equally.",
+    "noTransferNeeded": "No transfers are needed.",
+    "sharedDataFound": "📤 Shared Data Found",
+    "peopleCount": "👥 {count} people",
+    "calculationAvailable": "🧮 Calculation result available",
+    "load": "📥 Load",
+    "reject": "❌ Reject",
+    "form": {
+      "name": "Full Name",
+      "namePlaceholder": "Enter the person's full name",
+      "iban": "IBAN",
+      "ibanPlaceholder": "TR00 0000 0000 0000 0000 0000 00",
+      "expenses": "Expense Amount",
+      "expensesPlaceholder": "0.00",
+      "addButton": "Add Person"
+    },
+    "currencySelector": {
+      "title": "Select Currency"
+    },
+    "validation": {
+      "fillAllFields": "Please fill in all fields!",
+      "validAmount": "Please enter a valid expense amount!",
+      "minTwoPeople": "You need at least 2 people to calculate!",
+      "copySuccess": "IBAN copied!",
+      "copyError": "Copy failed!",
+      "shareError": "An error occurred during sharing!",
+      "linkCopyError": "Link could not be copied! Please try again.",
+      "nameRequired": "Full name is required",
+      "ibanRequired": "IBAN is required",
+      "expensesInvalid": "Please enter a valid expense amount"
+    },
+    "instructions": {
+      "title": "📋 How to Use?",
+      "step1": {
+        "title": "1. Add People",
+        "items": [
+          "Enter each person's full name",
+          "Add IBAN information",
+          "Enter the expense amount made by that person"
+        ]
+      },
+      "step2": {
+        "title": "2. Calculate",
+        "items": [
+          "Click \"Calculate\" button after adding at least 2 people",
+          "The system will automatically calculate who owes what to whom",
+          "Results will be displayed on the right side"
+        ]
+      },
+      "step3": {
+        "title": "3. Share",
+        "items": [
+          "You can share the calculation result with the \"Share Result\" button",
+          "Others can see the same result with the shared link",
+          "You can easily make transfers by copying IBANs"
+        ]
+      }
+    }
+  }
+}

@@ -1,30 +1,44 @@
+import { Currency, Person } from "@/types";
 import React, { useState } from "react";
 
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
-import { Person } from "@/types";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface PersonFormProps {
   onAddPerson: (person: Omit<Person, "id">) => void;
+  selectedCurrency: Currency;
 }
 
-const PersonForm: React.FC<PersonFormProps> = ({ onAddPerson }) => {
+const PersonForm: React.FC<PersonFormProps> = ({
+  onAddPerson,
+  selectedCurrency,
+}) => {
+  const t = useTranslations("app");
   const [name, setName] = useState("");
   const [iban, setIban] = useState("");
   const [expenses, setExpenses] = useState("");
+  const [touched, setTouched] = useState({
+    name: false,
+    iban: false,
+    expenses: false,
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Tüm alanları touched yap
+    setTouched({ name: true, iban: true, expenses: true });
+
     if (!name.trim() || !iban.trim() || !expenses.trim()) {
-      alert("Lütfen tüm alanları doldurun!");
+      alert(t("validation.fillAllFields"));
       return;
     }
 
     const expensesNumber = parseFloat(expenses);
     if (isNaN(expensesNumber) || expensesNumber < 0) {
-      alert("Lütfen geçerli bir harcama miktarı girin!");
+      alert(t("validation.validAmount"));
       return;
     }
 
@@ -38,6 +52,7 @@ const PersonForm: React.FC<PersonFormProps> = ({ onAddPerson }) => {
     setName("");
     setIban("");
     setExpenses("");
+    setTouched({ name: false, iban: false, expenses: false });
   };
 
   return (
@@ -54,7 +69,7 @@ const PersonForm: React.FC<PersonFormProps> = ({ onAddPerson }) => {
         transition={{ delay: 0.2 }}
         className="text-lg font-semibold text-gray-800"
       >
-        Kişi Ekle
+        {t("addPerson")}
       </motion.h3>
 
       <motion.div
@@ -69,11 +84,16 @@ const PersonForm: React.FC<PersonFormProps> = ({ onAddPerson }) => {
           transition={{ delay: 0.4 }}
         >
           <Input
-            label="Ad Soyad"
-            placeholder="Kişinin adını ve soyadını girin"
+            label={t("form.name")}
+            placeholder={t("form.namePlaceholder")}
             value={name}
             onChange={(e) => setName(e.target.value)}
+            onBlur={() => setTouched((prev) => ({ ...prev, name: true }))}
             required
+            isInvalid={!name.trim() && touched.name}
+            errorMessage={
+              !name.trim() && touched.name ? t("validation.nameRequired") : ""
+            }
           />
         </motion.div>
 
@@ -83,11 +103,16 @@ const PersonForm: React.FC<PersonFormProps> = ({ onAddPerson }) => {
           transition={{ delay: 0.5 }}
         >
           <Input
-            label="IBAN"
-            placeholder="TR00 0000 0000 0000 0000 0000 00"
+            label={t("form.iban")}
+            placeholder={t("form.ibanPlaceholder")}
             value={iban}
             onChange={(e) => setIban(e.target.value)}
+            onBlur={() => setTouched((prev) => ({ ...prev, iban: true }))}
             required
+            isInvalid={!iban.trim() && touched.iban}
+            errorMessage={
+              !iban.trim() && touched.iban ? t("validation.ibanRequired") : ""
+            }
           />
         </motion.div>
 
@@ -97,14 +122,29 @@ const PersonForm: React.FC<PersonFormProps> = ({ onAddPerson }) => {
           transition={{ delay: 0.6 }}
         >
           <Input
-            label="Harcama Miktarı (₺)"
-            placeholder="0.00"
+            label={`${t("form.expenses")} (${selectedCurrency.symbol})`}
+            placeholder={t("form.expensesPlaceholder")}
             type="number"
             step="0.01"
             min="0"
             value={expenses}
             onChange={(e) => setExpenses(e.target.value)}
+            onBlur={() => setTouched((prev) => ({ ...prev, expenses: true }))}
             required
+            isInvalid={
+              touched.expenses &&
+              (expenses === "" ||
+                isNaN(parseFloat(expenses)) ||
+                parseFloat(expenses) < 0)
+            }
+            errorMessage={
+              touched.expenses &&
+              (expenses === "" ||
+                isNaN(parseFloat(expenses)) ||
+                parseFloat(expenses) < 0)
+                ? t("validation.expensesInvalid")
+                : ""
+            }
           />
         </motion.div>
       </motion.div>
@@ -115,7 +155,7 @@ const PersonForm: React.FC<PersonFormProps> = ({ onAddPerson }) => {
         transition={{ delay: 0.7 }}
       >
         <Button type="submit" color="primary" className="w-full">
-          Kişi Ekle
+          {t("form.addButton")}
         </Button>
       </motion.div>
     </motion.form>

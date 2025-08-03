@@ -1,22 +1,30 @@
 "use client";
 
-import { CalculationResult, Person } from "@/types";
+import { CalculationResult, Currency, Person } from "@/types";
 import React, { useEffect, useState } from "react";
 import { clearUrl, getDataFromUrl, setDataToUrl } from "@/utils/shareUtils";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Button } from "@heroui/button";
 import CalculationResults from "@/components/CalculationResults";
+import CurrencySelector from "@/components/CurrencySelector";
 import PersonForm from "@/components/PersonForm";
 import PersonList from "@/components/PersonList";
 import ShareButton from "@/components/ShareButton";
 import SharedDataLoader from "@/components/SharedDataLoader";
 import { calculateExpenses } from "@/utils/expenseCalculator";
+import { getDefaultCurrency } from "@/utils/currencyUtils";
 import { motion } from "framer-motion";
 
 const HomePage = () => {
+  const t = useTranslations("app");
+  const locale = useLocale();
   const [people, setPeople] = useState<Person[]>([]);
   const [calculationResult, setCalculationResult] =
     useState<CalculationResult | null>(null);
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(
+    getDefaultCurrency(locale)
+  );
   const [sharedData, setSharedData] = useState<{
     people: Person[];
     result: CalculationResult | null;
@@ -51,7 +59,7 @@ const HomePage = () => {
 
   const handleCalculate = () => {
     if (people.length < 2) {
-      alert("Hesaplama yapmak için en az 2 kişi eklemeniz gerekiyor!");
+      alert(t("validation.minTwoPeople"));
       return;
     }
 
@@ -90,13 +98,19 @@ const HomePage = () => {
           transition={{ duration: 0.8, type: "spring" }}
           className="text-center mb-8"
         >
+          <div className="flex justify-center mb-4">
+            <CurrencySelector
+              selectedCurrency={selectedCurrency}
+              onCurrencyChange={setSelectedCurrency}
+            />
+          </div>
           <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             className="text-4xl font-bold text-gray-900 mb-2"
           >
-            💰 Harcama Hesaplayıcı
+            {t("title")}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -104,8 +118,7 @@ const HomePage = () => {
             transition={{ delay: 0.4, duration: 0.6 }}
             className="text-gray-600"
           >
-            Kişilerin harcamalarını girerek kimin kime ne kadar para vermesi
-            gerektiğini hesaplayın
+            {t("subtitle")}
           </motion.p>
         </motion.div>
 
@@ -120,8 +133,15 @@ const HomePage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Sol Taraf - Form ve Liste */}
           <div className="space-y-6">
-            <PersonForm onAddPerson={addPerson} />
-            <PersonList people={people} onRemovePerson={removePerson} />
+            <PersonForm
+              onAddPerson={addPerson}
+              selectedCurrency={selectedCurrency}
+            />
+            <PersonList
+              people={people}
+              onRemovePerson={removePerson}
+              selectedCurrency={selectedCurrency}
+            />
 
             {/* Hesaplama Butonları */}
             {people.length >= 2 && (
@@ -143,7 +163,7 @@ const HomePage = () => {
                       onClick={handleCalculate}
                       className="w-full"
                     >
-                      🧮 Hesapla
+                      {t("calculate")}
                     </Button>
                   </motion.div>
                   <motion.div
@@ -151,7 +171,7 @@ const HomePage = () => {
                     whileTap={{ scale: 0.95 }}
                   >
                     <Button color="danger" variant="light" onClick={clearAll}>
-                      🗑️ Temizle
+                      {t("clear")}
                     </Button>
                   </motion.div>
                 </div>
@@ -164,7 +184,10 @@ const HomePage = () => {
 
           {/* Sağ Taraf - Sonuçlar */}
           <div>
-            <CalculationResults result={calculationResult} />
+            <CalculationResults
+              result={calculationResult}
+              selectedCurrency={selectedCurrency}
+            />
           </div>
         </div>
 
@@ -172,44 +195,43 @@ const HomePage = () => {
         {people.length === 0 && (
           <div className="mt-12 bg-blue-50 p-6 rounded-lg border border-blue-200">
             <h3 className="text-lg font-semibold text-blue-900 mb-4">
-              📋 Nasıl Kullanılır?
+              {t("instructions.title")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-blue-800">
               <div>
-                <h4 className="font-medium mb-2">1. Kişi Ekleme</h4>
+                <h4 className="font-medium mb-2">
+                  {t("instructions.step1.title")}
+                </h4>
                 <ul className="space-y-1">
-                  <li>• Her kişinin adını ve soyadını girin</li>
-                  <li>• IBAN bilgisini ekleyin</li>
-                  <li>• O kişinin yaptığı harcama miktarını girin</li>
+                  {t
+                    .raw("instructions.step1.items")
+                    .map((item: string, index: number) => (
+                      <li key={index}>• {item}</li>
+                    ))}
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium mb-2">2. Hesaplama</h4>
+                <h4 className="font-medium mb-2">
+                  {t("instructions.step2.title")}
+                </h4>
                 <ul className="space-y-1">
-                  <li>
-                    • En az 2 kişi ekledikten sonra "Hesapla" butonuna basın
-                  </li>
-                  <li>
-                    • Sistem otomatik olarak kimin kime ne kadar para vermesi
-                    gerektiğini hesaplayacak
-                  </li>
-                  <li>• Sonuçlar sağ tarafta görüntülenecek</li>
+                  {t
+                    .raw("instructions.step2.items")
+                    .map((item: string, index: number) => (
+                      <li key={index}>• {item}</li>
+                    ))}
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium mb-2">3. Paylaşım</h4>
+                <h4 className="font-medium mb-2">
+                  {t("instructions.step3.title")}
+                </h4>
                 <ul className="space-y-1">
-                  <li>
-                    • Hesaplama sonucunu "Sonucu Paylaş" butonu ile
-                    paylaşabilirsiniz
-                  </li>
-                  <li>
-                    • Paylaşılan link ile diğerleri de aynı sonucu görebilir
-                  </li>
-                  <li>
-                    • IBAN'ları kopyalayarak transfer işlemlerini kolayca
-                    yapabilirsiniz
-                  </li>
+                  {t
+                    .raw("instructions.step3.items")
+                    .map((item: string, index: number) => (
+                      <li key={index}>• {item}</li>
+                    ))}
                 </ul>
               </div>
             </div>

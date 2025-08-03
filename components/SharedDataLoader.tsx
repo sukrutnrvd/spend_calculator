@@ -3,6 +3,7 @@ import { CalculationResult, Person } from "@/types";
 import { Button } from "@heroui/button";
 import React from "react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface SharedDataLoaderProps {
   people: Person[];
@@ -17,6 +18,7 @@ const SharedDataLoader: React.FC<SharedDataLoaderProps> = ({
   onLoadData,
   onClearShared,
 }) => {
+  const t = useTranslations("app");
   const hasSharedData = people.length > 0 || result !== null;
 
   if (!hasSharedData) {
@@ -33,14 +35,16 @@ const SharedDataLoader: React.FC<SharedDataLoaderProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-blue-900 mb-2">
-            📤 Paylaşılan Veri Bulundu
+            {t("sharedDataFound")}
           </h3>
           <p className="text-sm text-blue-700 mb-3">
             {people.length > 0 && (
-              <span className="block">👥 {people.length} kişi</span>
+              <span className="block">
+                {t("peopleCount", { count: people.length })}
+              </span>
             )}
             {result && (
-              <span className="block">🧮 Hesaplama sonucu mevcut</span>
+              <span className="block">{t("calculationAvailable")}</span>
             )}
           </p>
         </div>
@@ -52,7 +56,7 @@ const SharedDataLoader: React.FC<SharedDataLoaderProps> = ({
               size="sm"
               onClick={() => onLoadData(people, result)}
             >
-              📥 Yükle
+              {t("load")}
             </Button>
           </motion.div>
 
@@ -63,7 +67,7 @@ const SharedDataLoader: React.FC<SharedDataLoaderProps> = ({
               size="sm"
               onClick={onClearShared}
             >
-              ❌ Reddet
+              {t("reject")}
             </Button>
           </motion.div>
         </div>

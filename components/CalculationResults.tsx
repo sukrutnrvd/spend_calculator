@@ -1,14 +1,21 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { CalculationResult, Currency } from "@/types";
 
-import { CalculationResult } from "@/types";
 import React from "react";
-import { formatCurrency } from "@/utils/expenseCalculator";
+import { formatCurrency } from "@/utils/currencyUtils";
+import { useTranslations } from "next-intl";
 
 interface CalculationResultsProps {
   result: CalculationResult | null;
+  selectedCurrency: Currency;
 }
 
-const CalculationResults: React.FC<CalculationResultsProps> = ({ result }) => {
+const CalculationResults: React.FC<CalculationResultsProps> = ({
+  result,
+  selectedCurrency,
+}) => {
+  const t = useTranslations("app");
+
   if (!result) {
     return null;
   }
@@ -26,7 +33,7 @@ const CalculationResults: React.FC<CalculationResultsProps> = ({ result }) => {
         transition={{ delay: 0.2 }}
         className="text-xl font-bold text-gray-800"
       >
-        Hesaplama Sonuçları
+        {t("calculationResults")}
       </motion.h3>
 
       {/* Özet Bilgiler */}
@@ -43,10 +50,10 @@ const CalculationResults: React.FC<CalculationResultsProps> = ({ result }) => {
           className="bg-green-50 p-4 rounded-lg border border-green-200"
         >
           <div className="text-sm text-green-600 font-medium">
-            Toplam Harcama
+            {t("totalExpenseLabel")}
           </div>
           <div className="text-lg font-bold text-green-800 break-words">
-            {formatCurrency(result.totalExpense)}
+            {formatCurrency(result.totalExpense, selectedCurrency)}
           </div>
         </motion.div>
 
@@ -57,10 +64,10 @@ const CalculationResults: React.FC<CalculationResultsProps> = ({ result }) => {
           className="bg-blue-50 p-4 rounded-lg border border-blue-200"
         >
           <div className="text-sm text-blue-600 font-medium">
-            Kişi Başı Ortalama
+            {t("averagePerPerson")}
           </div>
           <div className="text-lg font-bold text-blue-800 break-words">
-            {formatCurrency(result.averagePerPerson)}
+            {formatCurrency(result.averagePerPerson, selectedCurrency)}
           </div>
         </motion.div>
 
@@ -71,7 +78,7 @@ const CalculationResults: React.FC<CalculationResultsProps> = ({ result }) => {
           className="bg-purple-50 p-4 rounded-lg border border-purple-200"
         >
           <div className="text-sm text-purple-600 font-medium">
-            Transfer Sayısı
+            {t("transferCount")}
           </div>
           <div className="text-lg font-bold text-purple-800">
             {result.transfers.length}
@@ -92,7 +99,7 @@ const CalculationResults: React.FC<CalculationResultsProps> = ({ result }) => {
             transition={{ delay: 0.8, duration: 0.4 }}
             className="text-lg font-semibold text-gray-800 mb-4"
           >
-            Yapılması Gereken Transferler
+            {t("transfers")}
           </motion.h4>
 
           <motion.div
@@ -129,10 +136,10 @@ const CalculationResults: React.FC<CalculationResultsProps> = ({ result }) => {
 
                   <div className="md:text-right">
                     <div className="text-lg font-bold text-gray-900">
-                      {formatCurrency(transfer.amount)}
+                      {formatCurrency(transfer.amount, selectedCurrency)}
                     </div>
                     <div className="text-sm text-gray-500">
-                      transfer edilecek
+                      {t("transferAmount")}
                     </div>
                   </div>
                 </motion.div>
@@ -148,11 +155,9 @@ const CalculationResults: React.FC<CalculationResultsProps> = ({ result }) => {
           className="text-center py-8"
         >
           <div className="text-green-600 text-lg font-medium">
-            🎉 Mükemmel! Herkes eşit ödeme yapmış.
+            {t("perfectMessage")}
           </div>
-          <p className="text-gray-600 mt-2">
-            Herhangi bir transfer yapılmasına gerek yok.
-          </p>
+          <p className="text-gray-600 mt-2">{t("noTransferNeeded")}</p>
         </motion.div>
       )}
     </motion.div>
